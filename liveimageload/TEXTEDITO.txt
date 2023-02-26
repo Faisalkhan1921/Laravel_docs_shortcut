@@ -1,0 +1,20 @@
+Now we are going to add text editor
+Load these to js files as below
+<!--tinymce js-->
+ <script src="{{asset('admin/assets/libs/tinymce/tinymce.min.js')}}"></script>
+
+ <!-- init js -->
+ <script src="{{asset('admin/assets/js/pages/form-editor.init.js')}}"></script>
+
+ <div class="row mb-3">
+                <label for="example-text-input" class="col-sm-2 col-form-label">Long Description </label>
+                <div class="col-sm-10">
+         <textarea id="elm1" name="long_description">
+                {{ $aboutpage->long_description }}
+          </textarea>
+                </div>
+            </div>
+            <!-- end row -->
+
+
+This area will show text editor

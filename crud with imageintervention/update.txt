@@ -1,0 +1,32 @@
+  if ($request->file('brand_image')) {
+            $image = $request->file('brand_image');
+            $name_gen = hexdec(uniqid()).'.'.$image->getClientOriginalExtension();  // 3434343443.jpg
+
+            Image::make($image)->resize(300,300)->save('upload/brands/'.$name_gen);
+            $save_url = 'upload/brands/'.$name_gen;
+
+            Brand::findOrFail($id)->update([
+                'brand_name_en' => $request->brand_name_en,
+                'brand_name_hindi' => $request->brand_name_hindi,
+                'brand_image' => $save_url,
+
+            ]); 
+            $notification = array(
+            'message' => 'Brand Updated with Image Successfully', 
+            'alert-type' => 'success'
+        );
+
+        return redirect()->route('all.brands')->with($notification);
+
+        } else{
+
+            Brand::findOrFail($id)->update([
+                'brand_name_en' => $request->brand_name_en,
+                'brand_name_hindi' => $request->brand_name_hindi,
+            ]); 
+            $notification = array(
+            'message' => 'Brand Updated without Image Successfully', 
+            'alert-type' => 'success'
+        );
+
+       return redirect()->route('all.brands')->with($notification);
