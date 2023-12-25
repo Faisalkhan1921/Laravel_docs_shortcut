@@ -1,0 +1,9 @@
+only upload .mysql file
+
+install the package
+
+composer require --dev kitloong/laravel-migrations-generator
+
+run this command simply
+
+php artisan migrate:generate

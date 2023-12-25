@@ -1,0 +1,11 @@
+git init
+git remote add origin https clone
+
+git add .
+git commit -m "message here"
+
+git branch
+
+git checkout -b master 
+
+git push --set-upstream origin master -f

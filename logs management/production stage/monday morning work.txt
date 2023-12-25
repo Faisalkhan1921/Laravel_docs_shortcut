@@ -1,0 +1,201 @@
+
+  // ===========================old code ========================
+  public function laravel_logs()
+{
+    $laravelLogs = file(storage_path('logs/laravel.log'));
+    $laravelErrorLogs = [];
+
+    foreach ($laravelLogs as $log) {
+        if (strpos($log, 'local.ERROR') !== false || strpos($log, 'laravel.EMERGENCY') !== false) {
+            preg_match('/\[(.*?)\]/', $log, $matches);
+            $dateAndTime = $matches[1];
+            $errorType = strpos($log, 'laravel.EMERGENCY') !== false ? 'EMERGENCY' : 'ERROR';
+            $message = substr($log, strpos($log, $errorType) + strlen($errorType) + 2);
+
+            // Extracting IP Address
+            preg_match('/(\d+\.\d+\.\d+\.\d+)/', $log, $ipMatches);
+            $ipAddress = isset($ipMatches[1]) ? $ipMatches[1] : '';
+
+            $laravelErrorLogs[] = [
+                'date' => explode(' ', $dateAndTime)[0],
+                'time' => explode(' ', $dateAndTime)[1],
+                'error_type' => $errorType,
+                'message' => $message,
+                'ipaddress' => $ipAddress,
+            ];
+        }
+    }
+
+    // Reverse the array to get data in descending order
+    $laravelErrorLogs = array_reverse($laravelErrorLogs);
+
+    return view('pages.logs.laravel', ['laravelLogs' => $laravelErrorLogs]);
+}
+
+
+
+
+
+
+
+
+========================new working code ==============
+
+  public function laravel_logs()
+{
+    $laravelLogs = file(storage_path('logs/laravel.log'));
+    $laravelErrorLogs = [];
+
+    foreach ($laravelLogs as $log) {
+        // Check if the pattern matches
+        if (preg_match('/\[(.*?)\]/', $log, $matches)) {
+            $dateAndTime = $matches[1];
+            $errorType = strpos($log, 'laravel.EMERGENCY') !== false ? 'EMERGENCY' : 'ERROR';
+            $message = substr($log, strpos($log, $errorType) + strlen($errorType) + 2);
+
+            // Extracting IP Address
+            preg_match('/(\d+\.\d+\.\d+\.\d+)/', $log, $ipMatches);
+            $ipAddress = isset($ipMatches[1]) ? $ipMatches[1] : '';
+
+            // Check if the log entry has an IP address
+            if (!empty($ipAddress)) {
+                $laravelErrorLogs[] = [
+                    'date' => explode(' ', $dateAndTime)[0],
+                    'time' => explode(' ', $dateAndTime)[1],
+                    'error_type' => $errorType,
+                    'ipaddress' => $ipAddress,
+                    'message' => $message,
+                ];
+            }
+        }
+    }
+
+    // Reverse the array to get data in descending order
+    $laravelErrorLogs = array_reverse($laravelErrorLogs);
+
+    return view('pages.logs.laravel', ['laravelLogs' => $laravelErrorLogs]);
+}
+
+
+
+
+==========================================
+
+script 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+
+<script>
+$(document).ready(function() {
+    // Set the CSRF token in the headers for all AJAX requests
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $('.timezone-button').on('click', function() {
+        var button = $(this);
+        var timezone = button.data('timezone');
+        var display = button.siblings('.timezone-display');
+        var originalDatetime = display.data('original-datetime');
+
+        // Adjust datetime based on the button clicked
+        var adjustedDatetime = (timezone === 'Asia/Karachi')
+            ? moment(originalDatetime).add(12, 'hours')
+            : moment(originalDatetime).subtract(12, 'hours');
+
+        $.ajax({
+            url: '{{ route("update-timezone") }}',
+            type: 'POST',
+            data: { timezone: timezone, datetime: adjustedDatetime.format('YYYY-MM-DD HH:mm:ss') },
+            success: function(response) {
+                display.text(response);
+
+                var newLabel = (timezone === 'Asia/Karachi') ? 'Convert Original' : 'Convert Karachi';
+                button.text(newLabel);
+
+                button.data('timezone', (timezone === 'Asia/Karachi') ? 'UTC' : 'Asia/Karachi');
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+            }
+        });
+    });
+});
+
+
+
+</script>
+
+
+
+    <div class="card-box table-responsive">
+                    @php
+                    use Carbon\Carbon;
+                @endphp
+                    <table id="example" class="table">
+                        <thead class="bg-dark text-light">
+                            <tr>
+                                <th class="text-center">User</th>
+                                <th class="text-center">Name/Email</th>
+                                <th class="text-center">IP Address</th>
+                                <th class="text-center">Type</th>
+                                <th class="text-center" style="width:25%;">Section</th>
+                                <th class="text-center">Date</th>
+                                <th class="text-center">Timestamp</th>
+                                <th>Description</th>
+                                <th class="text-center">Timezone</th> <!-- Add a new column for the timezone -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($customerLogs as $logData)
+                                <tr>
+                                    <td class="text-center" style="background-color: gray; color:white; font-weight:bold;">{{ $logData['user'] ?? '' }}</td>
+                                    <td class="text-center">{{ $logData['name'] ?? '' }}</td>
+                                    <td class="text-center" style="color: blue">{{ $logData['ipaddress'] ?? '' }}</td>
+                                    <td class="text-center">{{ $logData['type'] ?? '' }}</td>
+                                    <td class="text-center">{{ $logData['section'] ?? '' }}</td>
+                                    <td class="text-center">{{ $logData['date'] ?? '' }}</td>
+                                    <td class="text-center">{{ $logData['time'] ?? '' }}</td>
+                                    <td>
+                                        @if(is_array($logData['description'] ?? null))
+                                            {{ json_encode($logData['description']) }}
+                                        @else
+                                            {{ $logData['description'] ?? '' }}
+                                        @endif
+                                    </td>
+                                    <td class="text-center">
+                                        <?php
+                                            // Combine date and time into a single datetime string
+                                            $datetimeString = $logData['date'] . ' ' . $logData['time'];
+                                        ?>
+                                        <span class="timezone-display" data-original-datetime="{{ $datetimeString }}">{{ $datetimeString }}</span>
+                                        <button class="timezone-button btn btn-primary convert-original-button" data-timezone="UTC">Convert Karachi</button>
+                                    </td>
+                            
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    
+
+
+webpphp
+
+Route::post('/update-timezone', [LogsController::class, 'updateTimezone'])->name('update-timezone');
+public function updateTimezone(Request $request)
+{
+    try {
+        $timezone = $request->input('timezone');
+        $datetimeString = $request->input('datetime');
+
+        $datetime = Carbon::parse($datetimeString)->timezone($timezone)->toDateTimeString();
+
+        return response()->json($datetime);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+}
+

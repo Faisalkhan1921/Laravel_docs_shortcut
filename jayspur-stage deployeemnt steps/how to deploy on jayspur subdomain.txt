@@ -1,0 +1,21 @@
+==============uploading laravel project on company stage=============
+
+create subdomain under public_html
+upload the zip inside public_html/sub_domain_name(for example logsmanagement123.com)
+extract the domain ->you will get a folder all the files will be inside them
+move the file from the folder to public_html/logs_management123.com/
+create new database
+add user to db
+give previliges
+upload/import db file
+
+go to filemanager update env file
+
+move all folder from public to public_html/logs_management/
+
+this step will help run the all js/css files
+
+update the redirects for the domain
+
+
+

@@ -1,0 +1,31 @@
+working script 
+function changeTime() {
+        var timeCells = document.getElementsByClassName('time-cell');
+
+        for (var i = 0; i < timeCells.length; i++) {
+            var originalTime = timeCells[i].innerText;
+            var convertedTime = convertTime(originalTime);
+
+            timeCells[i].innerText = convertedTime;
+        }
+
+        var btn = document.getElementById('changeTimeBtn');
+        var btnLabel = btn.innerText;
+
+        btn.innerText = btnLabel === 'Change to PK Time' ? 'Change to Original Time' : 'Change to PK Time';
+    }
+
+    function convertTime(time) {
+        // Parse the time string to a Date object
+        var date = new Date('2000-01-01T' + time);
+
+        // Add 12 hours to the time
+        date.setHours(date.getHours() + 12);
+
+        // Format the new time
+        var hours = ('0' + date.getHours()).slice(-2);
+        var minutes = ('0' + date.getMinutes()).slice(-2);
+        var seconds = ('0' + date.getSeconds()).slice(-2);
+
+        return hours + ':' + minutes + ':' + seconds;
+    }

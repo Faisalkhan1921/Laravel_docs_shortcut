@@ -1,0 +1,33 @@
+Log::channel('customer')->info('Successful Login', ['user' => 'customer', 'name' => $request->username, 'type' => 'general', 'section' => 'login', 'description' => 'Login Successful', 'date' => now()->toDateString(), 'time' => now()->toTimeString()]);
+
+
+   $c_id=$_COOKIE["user"];
+        $customer=Customer::where("id",$c_id)
+        ->first();
+        $id= $customer->username;
+        $causerId = $id;
+
+
+   try {
+          // Code that might throw an exception
+          // ...
+          Log::channel('customer')->info('Successful Login', [
+              'user' => 'customer',
+              'name' => $username_cust,
+              'type' => 'general',
+              'section' => 'Addtocart',
+              'description' => 'Added to cart item = ' . $name . 'item code = ' . $itemcode . ' qty = ' . $qty,
+              'date' => now()->toDateString(),
+              'time' => now()->toTimeString()
+          ]);
+      } catch (\Exception $e) {
+          // Log the error with all columns filled
+          Log::channel('customer')->error('Unexpected Error', [
+              'user' => 'customer',
+              'name' => $username_cust,
+              'type' => 'error',
+              'section' => 'Addtocart',
+              'description' => 'Unexpected error occurred: ' . $e->getMessage(),
+              'date' => now()->toDateString(),
+              'time' => now()->toTimeString()
+          ]);

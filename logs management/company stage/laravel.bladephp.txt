@@ -1,0 +1,137 @@
+@extends('layout/app')
+
+@section('content')
+<!--<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css" />-->
+  
+<!--<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>-->
+
+<!-- page content -->
+<div class="right_col" role="main">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3>Logs records</h3>
+                
+            </div>
+          
+        </div>
+        <div class="clearfix"></div>
+
+
+<div class="row">
+  
+  <!-- form color picker -->
+  <div class="col-md-12 col-sm-12 ">
+    <div class="x_panel">
+      <div class="x_title">
+
+
+      <?php
+if(isset($_GET["str1"]))
+{
+?>
+
+<div class="alert alert-success" role="alert">
+Course Updated successfully.
+</div>
+<?php
+}
+?>
+
+<?php
+if(isset($_GET["str2"]))
+{
+?>
+
+<div class="alert alert-danger" role="alert">
+Course Deleted successfully.
+</div>
+<?php
+}
+?>
+
+
+        <h2>All Logs are here<small></small></h2>
+              <a href="{{route('extra.logs')}}" class="btn btn-danger btn-sm">General Logs</a>
+
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+          <div class="row">
+              <div class="col-sm-12">
+            <!--<a href="{{route('extra.logs')}}" class="btn btn-danger float-right">Logs Management</a>-->
+
+                <div class="card-box table-responsive">
+                    <table id="example" class="table table-bordered">
+                        <thead class="bg-dark text-light">
+                            <tr>
+                                <th class="text-center">Date</th>
+                                <th class="text-center">Time</th>
+                                <th class="text-center">Error Type</th>
+                                <th class="text-center">IpAddress</th>
+                                <th class="text-center">Message</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($laravelLogs as $logData)
+                                <tr>
+                                      <td>{{ $logData['date'] }}</td>
+                                    <td>{{ $logData['time'] }}</td>
+                                    <td>{{ $logData['error_type'] }}</td>
+                                    <td style="color:blue;">{{ $logData['ipaddress'] }}</td>
+                                    <td>{{ $logData['message'] }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    
+
+                    
+                    
+      
+      </div>
+      </div>
+  </div>
+</div>
+    </div>
+  </div>
+    </div>
+  </div>
+  <!-- /form color picker -->
+
+ 
+
+</div>
+</div>
+</div>
+<!-- /page content -->
+
+@endsection
+@section("page-script")
+<script src="https://cdn.datatables.net/1.11.1/js/jquery.dataTables.min.js"></script>
+
+<script src="https://cdn.datatables.net/1.11.1/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
+
+
+<link href="https://cdn.datatables.net/1.11.1/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+<script>
+$(document).ready(function(){
+$("#example").dataTable({
+//  "order": [[4, "desc"]] // Sort by the 6th column (timestamp) in descending order
+});
+});
+</script>
+{{-- <script>
+
+ $('.logstable').DataTable({
+    ajax: '{{route('logs.data')}}',
+    "order": [
+      [0, 'desc']
+  ],
+  "displayLength": 25,
+  fixedHeader: true
+});    
+    
+</script> --}}
+@endsection

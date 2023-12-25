@@ -1,0 +1,33 @@
+ $c_id=$_COOKIE["user"];
+  $customer=Customer::where("id",$c_id)
+  ->first();
+  $username_cust= $customer->username;
+  $causerId = $id;    
+
+
+try {
+          
+          Log::channel('customer')->info('Successful Login', [
+              'user' => 'customer',
+              'name' => $username_cust,
+              'type' => 'general',
+              'section' => 'Addtocart',
+              'description' => 'Added to cart item = ' . $name . 'item code = ' . $itemcode . ' qty = ' . $qty,
+              'date' => now()->toDateString(),
+              'time' => now()->toTimeString()
+          ]);
+      } catch (Exception $e) {
+          // Log the error with all columns filled
+          Log::channel('customer')->error('Unexpected Error', [
+              'user' => 'customer',
+              'name' => $username_cust,
+              'type' => 'error',
+              'section' => 'Addtocart',
+              'description' => 'Unexpected error occurred: ' . $e->getMessage(),
+              'date' => now()->toDateString(),
+              'time' => now()->toTimeString()
+          ]);
+      
+        }
+
+'description' => 'Order Has been placed successfully' . json_encode($request->all()),

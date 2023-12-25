@@ -1,0 +1,42 @@
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
+
+use LogsActivity
+
+protected $guarded = [];
+ 
+    protected static $recordEvents = ['created','updated','deleted'];
+    protected static $logAttributes = ['*'];
+    protected static $logName = "OrderLog";
+    protected static $logOnlyDirty = true;
+    // protected static $ignoreChangedAttributes = ['password','updated_at'];
+    public function getDescriptionForEvent(string $eventName): string
+    {
+        return "You have {$eventName} Order";
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+====================manual controller code=====
+     $ad_user =Auth::user()->email;       
+activity()
+                ->useLog("Customer Login module")
+                ->withProperties([
+                    'email' => $user,
+                    'password' => $password,
+                    'ip_address' => $ip
+                ])
+                ->log("status: Login Successfull.");
+    $lastActivity = Activity::all(); //returns the last logged activity
+    
+    // return $lastActivity;

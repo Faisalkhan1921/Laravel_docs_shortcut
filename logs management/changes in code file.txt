@@ -1,0 +1,167 @@
+cmscontroller (yy)
+dispatcher controller...(yy)
+size controller + model (yy)
+color controller + model (yy)
+front/datacontroller@ login logout(y)
+front/ordercontroler@ordersave(y)
+front/ajaxcontroller@addtocart(y)
+front/datacontroller@update-account/profile(y)
+alladmin/alladminusercontroller@store,update,delte(y)
+customercontroller accept,cancel,delete,update (y)
+assign (n)
+usermanagent@store (y)
+ordercontroller@deelte, @orderPayment @printpackaginglist @updateOrderStatus(y)
+itemcontroller@store @delete @productactivate (y)
+dispatchercontroller @store @delete @dispatcherAssignCustomer @dispatcherAssignedCustomersData(y)
+
+vendor/laravel/ui/auth-backend/authenticatedusers
+@sendFailedLoginResponse(y)
+@attemptLogin(y)
+dashboardcontroller @logout (y)
+pages/order/details.blade.php/ execute code (y)
+pages/item/update_details.blade.php (y)
+updatepricebtn updatestockbtn	(y) 
+
+sizecontroller @store @update @delete (y)
+colorcontroller @store delete (y)
+
+
+===================================itemcontroller============================
+@store(y)
+@delete (product deactivate code) (y)
+@productActivate (y)
+@admindelete (y)
+@productDetailStore  (y)
+@productDetailUpdate (y)
+@customItemPriceUpdate (y)
+@customItemStockUpdate (y)
+
+=======================datacontrllelr========================
+@update_custom_product(y) ye product details side p jo hai jisme paragraph b ata hai stockprice k right p
+@add_image_variant (y)
+@item_variant_upodate (y)
+@item_variant_delete (y)
+
+14 november 2023
+@back_to_deliver (y)
+@updatebackqty (y)
+@set_to_back (y)
+@cancell_order
+
+
+================order controller =========
+@orderByDateDetails (y)
+
+================categorytosubcategory=============
+@store (y)
+@update (y)
+@delete (y)
+
+=============customitemcontroller==========
+@updateCustomPrice (y)
+
+duplicationn problem on same page  update-details script wali jagah p modal show k bd code lagaya h logs k jiski waajah s duplication h
+============================pagescontrollelr ==============
+@product_details_delete (y)
+
+========================email controller===========
+@new (y)
+@status (y)
+@delete (y)
+
+=======================settingcontroller ======
+
+
+
+item-details.blade.php
+item.product.detail.store
+
+
+
+
+
+==============================
+
+
+$auth = Auth::user()->id;
+$username_cust = Auth::user()->name;
+$auth_role_id = Auth::user()->role_id;
+                 
+if($auth_role_id == 1)
+            {
+                $auth_role_id = 'SuperAdmin';
+            }
+            elseif($auth_role_id == 2)
+            {
+                $auth_role_id = 'Admin';
+            }
+            elseif($auth_role_id == 3)
+            {
+                $auth_role_id = 'Representative';
+            }
+            elseif($auth_role_id == 5)
+            {
+                $auth_role_id = 'Worker';
+            }
+            else {
+                $auth_role_id = 'Normal';
+            }
+            $ipaddress = $request->ip();
+            try {
+      
+                Log::channel('customer')->info('Product', [
+
+                    
+                    'user' => $auth_role_id,
+                    'name' => $username_cust,
+            'ipaddress' => $ipaddress,
+                    'type' => 'general',
+                    'section' => 'Product',
+                    'description' => 'Product Stock Updated -> ' . json_encode($request->all()),
+                    'date' => now()->toDateString(),
+                    'time' => now()->toTimeString()
+                ]);
+            } catch (\Exception $e) {
+                // Log the error with all columns filled
+                Log::channel('customer')->error('Unexpected Error', [
+                    'user' => 'customer',
+                    'name' => $username_cust,
+            'ipaddress' => $ipaddress,
+                    'type' => 'error',
+                    'section' => 'Product Details',
+                    'description' => 'Unexpected error occurred: ' . $e->getMessage(),
+                    'date' => now()->toDateString(),
+                    'time' => now()->toTimeString()
+                ]);
+              }
+
+
+
+==============================
+
+
+       <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Sr no</th>    
+                      <th >Module</th>
+                      <th>Description</th>
+                      <th>Properties</th>
+                      <th>Caused by</th>
+                      <th>Date & time</th>
+                    </tr>
+                    </thead>
+                    @foreach($logs as $data)
+                    <tbody>
+                      <tr>
+                        <th scope="row">{{$data->id}}</th>
+                        <td>{{$data->log_name}}</td>
+                        <td>{{$data->description}}</td>
+                        <td>{{$data->properties}}</td>
+                        <td>{{$data->fname }}  {{$data->lname}}</td>
+                        <td>{{$data->updated_at }} </td>
+                      </tr>
+                    
+                    </tbody>
+                    @endforeach
+                  </table>

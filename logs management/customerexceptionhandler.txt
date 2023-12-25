@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Exceptions;
+
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Throwable;
+use Illuminate\Support\Facades\Log;
+
+class Handler extends ExceptionHandler
+{
+    // ... (existing code)
+
+    public function report(Throwable $e)
+    {
+        $ipAddress = request()->ip();
+
+        if ($this->shouldReport($e)) {
+            Log::error("[{$ipAddress}] " . $e->getMessage(), [
+                'exception' => $e,
+            ]);
+        }
+
+        parent::report($e);
+    }
+
+    // ... (existing code)
+}

@@ -1,0 +1,242 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use DB;
+use Auth;
+use App\Models\Logs;
+use App\Models\Role;
+use App\Models\Order;
+use App\Models\Customer;
+use App\Models\OrderHead;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+
+class LogsController extends Controller
+{
+
+  public function logs_extra()
+  {
+      $customerLogs = file(storage_path('logs/customer.log'));
+      $customerLogData = [];
+  
+      foreach ($customerLogs as $log) {
+          // Extract JSON data from the log entry
+          preg_match('/\{.*\}/', $log, $matches);
+          $logData = json_decode($matches[0], true);
+          
+          if ($logData !== null) {
+              $customerLogData[] = $logData;
+          }
+      }
+  
+      // Reverse the array to get data in descending order
+      $customerLogData = array_reverse($customerLogData);
+  
+      return view('pages.logs.extra', ['customerLogs' => $customerLogData]);
+  }
+  
+//   ================controller code only ip ==================
+  
+    public function laravel_logs()
+  {
+      $laravelLogs = file(storage_path('logs/laravel.log'));
+      $laravelErrorLogs = [];
+  
+      foreach ($laravelLogs as $log) {
+          if (strpos($log, 'local.ERROR') !== false || strpos($log, 'laravel.EMERGENCY') !== false) {
+              preg_match('/\[(.*?)\]/', $log, $matches);
+              $dateAndTime = $matches[1];
+              $errorType = strpos($log, 'laravel.EMERGENCY') !== false ? 'EMERGENCY' : 'ERROR';
+              $message = substr($log, strpos($log, $errorType) + strlen($errorType) + 2);
+  
+              // Extracting IP Address
+              preg_match('/(\d+\.\d+\.\d+\.\d+)/', $log, $ipMatches);
+              $ipAddress = isset($ipMatches[1]) ? $ipMatches[1] : '';
+  
+              if (!empty($ipAddress)) { // Check if IP address is not empty
+                  $laravelErrorLogs[] = [
+                      'date' => explode(' ', $dateAndTime)[0],
+                      'time' => explode(' ', $dateAndTime)[1],
+                      'error_type' => $errorType,
+                      'message' => $message,
+                      'ipaddress' => $ipAddress,
+                  ];
+              }
+          }
+      }
+  
+      // Reverse the array to get data in descending order
+      $laravelErrorLogs = array_reverse($laravelErrorLogs);
+  
+      return view('pages.logs.laravel', ['laravelLogs' => $laravelErrorLogs]);
+  }
+
+//   modified with ip 
+  
+//     public function laravel_logs()
+// {
+//     $laravelLogs = file(storage_path('logs/laravel.log'));
+//     $laravelErrorLogs = [];
+
+//     foreach ($laravelLogs as $log) {
+//         if (strpos($log, 'local.ERROR') !== false || strpos($log, 'laravel.EMERGENCY') !== false) {
+//             preg_match('/\[(.*?)\]/', $log, $matches);
+//             $dateAndTime = $matches[1];
+//             $errorType = strpos($log, 'laravel.EMERGENCY') !== false ? 'EMERGENCY' : 'ERROR';
+//             $message = substr($log, strpos($log, $errorType) + strlen($errorType) + 2);
+
+//             // Extracting IP Address
+//             preg_match('/(\d+\.\d+\.\d+\.\d+)/', $log, $ipMatches);
+//             $ipAddress = isset($ipMatches[1]) ? $ipMatches[1] : '';
+
+//             $laravelErrorLogs[] = [
+//                 'date' => explode(' ', $dateAndTime)[0],
+//                 'time' => explode(' ', $dateAndTime)[1],
+//                 'error_type' => $errorType,
+//                 'message' => $message,
+//                 'ipaddress' => $ipAddress,
+//             ];
+//         }
+//     }
+
+   
+//     $laravelErrorLogs = array_reverse($laravelErrorLogs);
+
+//     return view('pages.logs.laravel', ['laravelLogs' => $laravelErrorLogs]);
+// }
+
+// ============original without ip=======
+//   public function laravel_logs()
+// {
+//     $laravelLogs = file(storage_path('logs/laravel.log'));
+//     $laravelErrorLogs = [];
+
+//     foreach ($laravelLogs as $log) {
+//         if (strpos($log, 'local.ERROR') !== false || strpos($log, 'laravel.EMERGENCY') !== false) {
+//                         preg_match('/\[(.*?)\]/', $log, $matches);
+//             $dateAndTime = $matches[1];
+//             $errorType = strpos($log, 'laravel.EMERGENCY') !== false ? 'EMERGENCY' : 'ERROR';
+//             $message = substr($log, strpos($log, $errorType) + strlen($errorType) + 2);
+
+//             $laravelErrorLogs[] = [
+//                 'date' => explode(' ', $dateAndTime)[0],
+//                 'time' => explode(' ', $dateAndTime)[1],
+//                 'error_type' => $errorType,
+//                 'message' => $message,
+//             ];
+//         }
+//     }
+
+//     // Reverse the array to get data in descending order
+//     $laravelErrorLogs = array_reverse($laravelErrorLogs);
+
+//     return view('pages.logs.laravel', ['laravelLogs' => $laravelErrorLogs]);
+// }
+
+
+//   public function laravel_logs()
+// {
+//     $logTypes = [
+//         'laravel.EMERGENCY',
+//         'laravel.ALERT',
+//         'laravel.CRITICAL',
+//         'local.ERROR',
+//         'local.WARNING',
+//         'local.NOTICE',
+//         'local.INFO',
+//         'local.DEBUG'
+//     ];
+
+//     $allLogs = [];
+
+//     foreach ($logTypes as $logType) {
+//         $logFilePath = storage_path("logs/{$logType}.log");
+//         if (file_exists($logFilePath)) {
+//             $logs = file($logFilePath, FILE_IGNORE_NEW_LINES);
+//             $logs = array_reverse($logs); // Reverse the array to get data in descending order
+//             $allLogs[$logType] = $logs;
+//         }
+//     }
+
+//     return view('pages.logs.laravel', compact('allLogs'));
+// }
+
+  // public function fetchAllLogs()
+  // {
+  //     $logTypes = [
+  //         'laravel.EMERGENCY',
+  //         'laravel.ALERT',
+  //         'laravel.CRITICAL',
+  //         'local.ERROR',
+  //         'local.WARNING',
+  //         'local.NOTICE',
+  //         'local.INFO',
+  //         'local.DEBUG'
+  //     ];
+  
+  //     $logs = [];
+  
+  //     foreach ($logTypes as $logType) {
+  //         $logFilePath = storage_path("logs/{$logType}.log");
+  //         if (file_exists($logFilePath)) {
+  //             $logs[$logType] = file($logFilePath, FILE_IGNORE_NEW_LINES);
+  //         }
+  //     }
+  
+  //     return view('logs.index', compact('logs'));
+  // }
+    
+  
+
+    public function logs()
+    {
+
+        $logs = DB::table('admin_accesses')
+                    
+        ->where([
+          ['admin_id',Auth::user()->id] ,
+          ['logs',1]
+           ])
+          ->first();
+        if ($logs) {
+          $logs = Logs::
+            orderBy('activity_log.created_at', 'desc') // Order by created_at in descending order
+            ->get();
+            $role=Role::where("isDelete",0)->get();
+          return view("pages.logs.index",compact("role","logs"));
+            // return view("pages.user_management.index",compact("role"));
+
+        } else {
+            return abort(403, 'Unauthorized action.'); // or redirect to some other page
+        }
+
+    }
+    
+    public function logsData()
+    {
+                    $logs=Logs::select([
+                "activity_log.*",
+                "customer.fname",
+                "customer.lname"
+                ])
+                ->join("customer","customer.id","=","activity_log.causer_id")
+                ->get();
+                 $logsData = array();
+          foreach($logs as $key=>$logsRecord)
+          {
+        $logsRows = array();			
+        $logsRows[] =$key+1;
+        $logsRows[] =$logsRecord->log_name;
+       $logsRows[] =$logsRecord->description;
+     
+        $logsRows[] =$logsRecord->fname." ".$logsRecord->lname;
+     
+        $logsData[] = $logsRows;
+          }
+       
+        $json["data"]=$logsData;
+        return json_encode($json); 
+    }
+    
+}

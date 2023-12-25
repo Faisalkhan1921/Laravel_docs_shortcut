@@ -1,0 +1,31 @@
+   public function laravel_logs()
+{
+    $laravelLogs = file(storage_path('logs/laravel.log'));
+    $laravelErrorLogs = [];
+
+    foreach ($laravelLogs as $log) {
+        if (strpos($log, 'local.ERROR') !== false || strpos($log, 'laravel.EMERGENCY') !== false) {
+            preg_match('/\[(.*?)\]/', $log, $matches);
+            $dateAndTime = $matches[1];
+            $errorType = strpos($log, 'laravel.EMERGENCY') !== false ? 'EMERGENCY' : 'ERROR';
+            $message = substr($log, strpos($log, $errorType) + strlen($errorType) + 2);
+
+            // Extracting IP Address
+            preg_match('/(\d+\.\d+\.\d+\.\d+)/', $log, $ipMatches);
+            $ipAddress = isset($ipMatches[1]) ? $ipMatches[1] : '';
+
+            $laravelErrorLogs[] = [
+                'date' => explode(' ', $dateAndTime)[0],
+                'time' => explode(' ', $dateAndTime)[1],
+                'error_type' => $errorType,
+                'message' => $message,
+                'ipaddress' => $ipAddress,
+            ];
+        }
+    }
+
+    // Reverse the array to get data in descending order
+    $laravelErrorLogs = array_reverse($laravelErrorLogs);
+
+    return view('pages.logs.laravel', ['laravelLogs' => $laravelErrorLogs]);
+}

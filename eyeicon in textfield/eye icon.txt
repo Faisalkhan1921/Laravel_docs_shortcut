@@ -1,0 +1,72 @@
+eye feature
+
+<style>
+      .pasword{
+        display: inline-block;
+        position: relative;
+        border: 1px solid #000;
+      }
+
+      .password input{
+        padding: 10px 5px;
+        outline: none;
+        border: 1px solid black;
+      }
+
+      .pass-icon{
+        position: absolute;
+        top: 35px;
+        right: 10px;
+        width: 24px;
+        cursor: pointer;
+      }
+    </style>
+
+
+<script>
+  function togglePassword() {
+    var passwordField = $('#password');
+    var icon = $('.toggle-password');
+
+    // Check if the password field is currently of type password
+    if (passwordField.attr('type') === 'password') {
+        passwordField.attr('type', 'text');
+        icon.html('👁️'); // Change the eye icon to an open eye
+    } else {
+        passwordField.attr('type', 'password');
+        icon.html('👁️'); // Change the eye icon back to a closed eye
+    }
+}
+
+function togglePassword2() {
+    var passwordField = $('#confirm_password');
+    var icon = $('.toggle-password2');
+
+    // Check if the password field is currently of type password
+    if (passwordField.attr('type') === 'password') {
+        passwordField.attr('type', 'text');
+        icon.html('👁️'); // Change the eye icon to an open eye
+    } else {
+        passwordField.attr('type', 'password');
+        icon.html('👁️'); // Change the eye icon back to a closed eye
+    }
+}
+
+
+</script>
+
+  <div class="col-md-6">
+                <label for="" class="float-left">Password</label>
+             <div class="password">
+              <input type="password" name="password"  class="form-control"  id="password">
+              <span class="pass-icon" onclick="togglePassword()">👁️</span>
+             </div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="" class="float-left">Confirm Password</label>
+                <div class="password">
+                  <input type="password" name="confirm_password"  class="form-control"  id="confirm_password">
+                  <span class="pass-icon toggle-password2" onclick="togglePassword2()">👁️</span>
+                </div>
+              </div>

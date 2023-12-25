@@ -1,0 +1,208 @@
+ $auth = Auth::user()->id;
+        $username_cust = Auth::user()->name;
+        $auth_role_id = Auth::user()->role_id;
+                         
+   if($auth_role_id == 1)
+                    {
+                        $auth_role_id = 'SuperAdmin';
+                    }
+                    elseif($auth_role_id == 2)
+                    {
+                        $auth_role_id = 'Admin';
+                    }
+                    elseif($auth_role_id == 3)
+                    {
+                        $auth_role_id = 'Representative';
+                    }
+                    elseif($auth_role_id == 5)
+                    {
+                        $auth_role_id = 'Worker';
+                    }
+                    else {
+                        $auth_role_id = 'Normal';
+                    }
+                    try {
+              
+                        Log::channel('customer')->info('Updated Admin', [
+    
+                            
+                            'user' => $auth_role_id,
+                            'name' => $username_cust,
+                            'type' => 'general',
+                            'section' => 'Admin Update Profile & Previliges',
+                            'description' => $request->all(),
+                            'date' => now()->toDateString(),
+                            'time' => now()->toTimeString()
+                        ]);
+                    } catch (\Exception $e) {
+                        // Log the error with all columns filled
+                        Log::channel('customer')->error('Unexpected Error', [
+                            'user' => 'customer',
+                            'name' => $username_cust,
+                            'type' => 'error',
+                            'section' => 'Admin update',
+                            'description' => 'Unexpected error occurred: ' . $e->getMessage(),
+                            'date' => now()->toDateString(),
+                            'time' => now()->toTimeString()
+                        ]);
+                      }
+
+
+
+
+
+
+========================store code ==============
+$auth = Auth::user()->id;
+        $username_cust = Auth::user()->name;
+        $auth_role_id = Auth::user()->role_id;
+                         
+       if($auth_role_id == 1)
+                    {
+                        $auth_role_id = 'SuperAdmin';
+                    }
+                    elseif($auth_role_id == 2)
+                    {
+                        $auth_role_id = 'Admin';
+                    }
+                    elseif($auth_role_id == 3)
+                    {
+                        $auth_role_id = 'Representative';
+                    }
+                    elseif($auth_role_id == 5)
+                    {
+                        $auth_role_id = 'Worker';
+                    }
+                    else {
+                        $auth_role_id = 'Normal';
+                    }
+                    try {
+              
+                        Log::channel('customer')->info('SubCategory', [
+    
+                            
+                            'user' => $auth_role_id,
+                            'name' => $username_cust,
+                            'type' => 'general',
+                            'section' => 'SubCategory',
+                            'description' => 'New SubCategory added = '. $request->name,
+                            'date' => now()->toDateString(),
+                            'time' => now()->toTimeString()
+                        ]);
+                    } catch (\Exception $e) {
+                        // Log the error with all columns filled
+                        Log::channel('customer')->error('Unexpected Error', [
+                            'user' => 'customer',
+                            'name' => $username_cust,
+                            'type' => 'error',
+                            'section' => 'Subcategory',
+                            'description' => 'Unexpected error occurred: ' . $e->getMessage(),
+                            'date' => now()->toDateString(),
+                            'time' => now()->toTimeString()
+                        ]);
+                      }
+
+========================== delete code =========================================
+    $subcat = SubCategory::find($id);
+    $cat_name = $subcat->name;
+
+    $auth = Auth::user()->id;
+    $username_cust = Auth::user()->name;
+    $auth_role_id = Auth::user()->role_id;
+                     
+   if($auth_role_id == 1)
+                {
+                    $auth_role_id = 'SuperAdmin';
+                }
+                elseif($auth_role_id == 2)
+                {
+                    $auth_role_id = 'Admin';
+                }
+                elseif($auth_role_id == 3)
+                {
+                    $auth_role_id = 'Representative';
+                }
+                elseif($auth_role_id == 5)
+                {
+                    $auth_role_id = 'Worker';
+                }
+                else {
+                    $auth_role_id = 'Normal';
+                }
+                try {
+          
+                    Log::channel('customer')->info('SubCategory', [
+
+                        
+                        'user' => $auth_role_id,
+                        'name' => $username_cust,
+                        'type' => 'general',
+                        'section' => 'SubCategory',
+                        'description' => 'SubCategory deleted = '. $cat_name,
+                        'date' => now()->toDateString(),
+                        'time' => now()->toTimeString()
+                    ]);
+                } catch (\Exception $e) {
+                    // Log the error with all columns filled
+                    Log::channel('customer')->error('Unexpected Error', [
+                        'user' => 'customer',
+                        'name' => $username_cust,
+                        'type' => 'error',
+                        'section' => 'SubCategory',
+                        'description' => 'Unexpected error occurred: ' . $e->getMessage(),
+                        'date' => now()->toDateString(),
+                        'time' => now()->toTimeString()
+                    ]);
+                  }
+
+=========================================update code =================================
+  $category= SubCategory::where("id",$request->subcategory_id)->first();
+        $oldcat = $category->name;
+ $auth = Auth::user()->id;
+        $username_cust = Auth::user()->name;
+        $auth_role_id = Auth::user()->role_id;
+                         
+       if($auth_role_id == 1)
+                    {
+                        $auth_role_id = 'SuperAdmin';
+                    }
+                    elseif($auth_role_id == 2)
+                    {
+                        $auth_role_id = 'Admin';
+                    }
+                    elseif($auth_role_id == 3)
+                    {
+                        $auth_role_id = 'Representative';
+                    }
+                    elseif($auth_role_id == 5)
+                    {
+                        $auth_role_id = 'Worker';
+                    }
+                    else {
+                        $auth_role_id = 'Normal';
+                    }
+                    try {
+              
+                        Log::channel('customer')->info('Subcategory', [
+    
+                            
+                            'user' => $auth_role_id,
+                            'name' => $username_cust,
+                            'type' => 'general',
+                            'section' => 'Subcategory',
+                            'description' => 'Subcategory Updated  ' . 'Old Name = '.$oldcat. ' New Name = ' . $request->name,
+                            'date' => now()->toDateString(),
+                            'time' => now()->toTimeString()
+                        ]);
+                    } catch (\Exception $e) {
+                        // Log the error with all columns filled
+                        Log::channel('customer')->error('Unexpected Error', [
+                            'user' => 'customer',
+                            'name' => $username_cust,
+                            'type' => 'error',
+                            'section' => 'Subcategory',
+                            'description' => 'Unexpected error occurred: ' . $e->getMessage(),
+                            'date' => now()->toDateString(),
+                            'time' => now()->toTimeString()
+                        ]);
+                      }
